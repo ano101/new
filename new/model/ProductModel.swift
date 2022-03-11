@@ -48,6 +48,22 @@ struct ResponseAddProduct: Codable {
     let error: String?
 }
 
+//TODO: Why your MODEL do something with server? I think should do ViewMOdel
+//TODO: And think about Generic. You do same code 4 times. You think it ok? DRY Principle. Dot Repeat Yourself.
+/*
+ 
+ Example. Create new Entity like NetworkManager which will do work with network and return your array
+ class NetworkManager {
+ func getItem<T: Codable> {for url: URL, completion: @escaping (T) -> () {
+ guard let url = url else {return }
+ 
+ blabla bla
+ completion(T)
+ }
+ 
+ }
+ */
+
 class ProductModel: ObservableObject {
     
     let product_id: Int
@@ -71,6 +87,7 @@ class ProductModel: ObservableObject {
                     completion(products)
                 }
             } catch {
+                //TODO: Same about error to user
                 print(error)
             }
         }

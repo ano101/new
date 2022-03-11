@@ -12,7 +12,7 @@ struct CatalogView: View {
     
     var body: some View {
         NavigationView {
-            List(viewModel.categorys) { category in
+            List(viewModel.categories) { category in
                 NavigationLink(destination: ProductListView(catid: category.category_id, namecat: category.name)) {
                     Text(category.name)
                         .font(.custom("Montserrat", size: 18))

@@ -17,11 +17,11 @@ struct LoginView: View {
             Image("backload")
                 .resizable()
                 .scaledToFit()
-                //.frame(height: 55, alignment: .center)
+            //.frame(height: 55, alignment: .center)
             
-            VStack(alignment: .leading, spacing: 8, content:  {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Эл. почта")
-                    .font(.custom("Montserrat", size: 16))
+                    .font(.projectSubTitle)
                     .fontWeight(.semibold)
                     .foregroundColor(.gray)
                 
@@ -31,12 +31,12 @@ struct LoginView: View {
                     .padding(.top,5)
                 
                 Divider()
-            })
-                .padding(.top,25)
-                
-            VStack(alignment: .leading, spacing: 8, content:  {
+            }
+            .padding(.top,25)
+            
+            VStack(alignment: .leading, spacing: 8)  {
                 Text("Пароль")
-                    .font(.custom("Montserrat", size: 16))
+                    .font(.projectSubTitle)
                     .fontWeight(.semibold)
                     .foregroundColor(.gray)
                 
@@ -46,14 +46,12 @@ struct LoginView: View {
                     .padding(.top,5)
                 
                 Divider()
-            })
-                .padding(.top,20)
+            }
+            .padding(.top,20)
             
-            Button(action: {
-                initViewModel.sendAuth(login: email, password: password)
-            }){
+            Button(action: { initViewModel.sendAuth(login: email, password: password) }){
                 Text("Войти")
-                    .font(.custom("Montserrat", size: 18))
+                    .font(.projectTitle)
                     .fontWeight(.semibold)
                     .padding(.all, 7.0)
                     .frame(maxWidth: .infinity)
@@ -63,7 +61,7 @@ struct LoginView: View {
             }
             if initViewModel.errorLogin == true {
                 Text("Ошибка email или пароль!")
-                    .font(.custom("Montserrat", size: 18))
+                    .font(.projectTitle)
                     .fontWeight(.semibold)
                     .padding(.all, 7.0)
                     .frame(maxWidth: .infinity)
@@ -72,9 +70,7 @@ struct LoginView: View {
             }
             
             
-            Button(action: {
-                
-            }){
+            Button(action: {}){
                 Text("Забыли пароль?")
                     .fontWeight(.semibold)
                     .foregroundColor(.gray)
@@ -85,5 +81,11 @@ struct LoginView: View {
         .padding()
     }
 }
+//TODO: Переделать все FONT. Ты их повторяешь думаю кучу раз)). Вынести в отдельный файл
 
+public extension Font {
+    
+    static let projectTitle = Font.custom("Montserrat", size: 18)
+    static let projectSubTitle = Font.custom("Montserrat", size: 16)
+}
 

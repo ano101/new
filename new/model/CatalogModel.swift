@@ -28,6 +28,7 @@ class CatalogModel: ObservableObject {
                     completion(categories)
                 }
             } catch {
+                //TODO: I think better give a user information about error. Alert maybe?
                 print(error)
             }
         }

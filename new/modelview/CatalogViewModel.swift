@@ -9,11 +9,12 @@ import Foundation
 
 class CatalogViewModel: ObservableObject {
     let model = CatalogModel()
-    @Published var categorys: [Category] = []
+    @Published var categories: [Category] = []
     
+    //TODO: Rename all incorrect naming
     func getCaterogys(){
         model.getCatalog { (category) in
-            self.categorys = category
+            self.categories = category
         }
     }
 }
