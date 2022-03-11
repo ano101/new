@@ -10,9 +10,12 @@ import CoreData
 
 @main
 struct newApp: App {
-    var body: some Scene {
-        WindowGroup {
-            homeView()
+    let initViewModel = InitViewModel()
+        var body: some Scene {
+            WindowGroup {
+                InitView()
+                    .environmentObject(initViewModel)
+            }
         }
-    }
+
 }

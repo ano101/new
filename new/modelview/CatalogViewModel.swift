@@ -9,4 +9,11 @@ import Foundation
 
 class CatalogViewModel: ObservableObject {
     let model = CatalogModel()
+    @Published var categorys: [Category] = []
+    
+    func getCaterogys(){
+        model.getCatalog { (category) in
+            self.categorys = category
+        }
+    }
 }

@@ -8,20 +8,27 @@
 import SwiftUI
 
 struct CartView: View {
-    @StateObject var cartLilstViewModel = CartListViewModel()
-    
+    @StateObject var ViewModel = CartViewModel()
+    @StateObject var fm = formaterr()
     var body: some View {
         NavigationView {
             VStack {
                 List(){
-                    ForEach(cartLilstViewModel.products, id: \.id) { product in
-                        CartItemView(product: product, cartLilstViewModel: cartLilstViewModel)
-                        
+                    if let carts = ViewModel.cart {
+                        if let products = carts.products {
+                            
+                            ForEach(products) { (cartitem: ProductResponse) in
+                                CartItemView(cartitem: cartitem, ViewModel: ViewModel)
+                                
+                            }
+                        }
+                       
                     }
+                   
                 }
                 .listStyle(InsetListStyle())
                 .onAppear(){
-                    cartLilstViewModel.getCartProducts()
+                    ViewModel.getCartProducts()
                 }
                 
                 VStack {
@@ -31,11 +38,18 @@ struct CartView: View {
                             .fontWeight(.heavy)
                             .foregroundColor(.gray)
                         Spacer()
+                        if let carts = ViewModel.cart {
+                            Text("\(fm.priceFormat(price: carts.total))")
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .foregroundColor(.black)
+                        } else {
+                            Text("0")
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .foregroundColor(.black)
+                        }
                         
-                        Text("5000")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .foregroundColor(.black)
                     }
                     .padding(.horizontal)
                     
@@ -67,49 +81,33 @@ struct CartView: View {
 
 
 struct CartItemView: View {
-    let product: CartViewModel
-    @ObservedObject var cartLilstViewModel: CartListViewModel
-    @State private var productViewState = ProductViewState()
-    
-    
-    private func update() {
-        do {
-            try cartLilstViewModel.updateCartProducts(product: productViewState)
-        } catch {
-            print("Error update caert \(error)")
-        }
-    }
-    
-    func deleteProduct() {
-        cartLilstViewModel.delCartProducts(product)
-        cartLilstViewModel.getCartProducts()
-    }
-    
-    
+    let cartitem: ProductResponse
+    @ObservedObject var ViewModel: CartViewModel
+    @StateObject var fm = formaterr()
+ 
     var body: some View {
         
         HStack(spacing: 15){
-            ImageView(urlString: product.image)
+            ImageView(urlString: cartitem.thumb)
                 .frame(width: 50, height: 90)
             
             VStack(alignment: .leading, spacing: 10) {
                 
-                Text(product.name)
+                Text(cartitem.name)
                     .fontWeight(.semibold)
                     .foregroundColor(.gray)
                 HStack(spacing: 15){
-                    Text("\(product.price) &#8381;")
-                        .font(.title2)
-                        .fontWeight(.heavy)
+                    let pricee = fm.priceFormat(price: cartitem.price)
+                    Text("\(pricee) &#8381;")
+                        .font(.custom("Montserrat", size: 18))
+                        .fontWeight(.semibold)
                         .foregroundColor(.black)
                     
                     Spacer(minLength: 0)
                     
                     Button(action: {
-                        if product.quantity > 1 {
-                            productViewState.quantity = productViewState.quantity - 1
-                            update()
-                            cartLilstViewModel.getCartProducts()
+                        if cartitem.quantity > 1 {
+
                         }
                         
                     }){
@@ -118,7 +116,7 @@ struct CartItemView: View {
                             .foregroundColor(.black)
                     }
                     
-                    Text("\(product.quantity)")
+                    Text("\(cartitem.quantity)")
                         .fontWeight(.heavy)
                         .foregroundColor(.black)
                         .padding(.vertical,5)
@@ -126,9 +124,7 @@ struct CartItemView: View {
                         .background(Color.black.opacity(0.06))
                     
                     Button(action: {
-                        productViewState.quantity = productViewState.quantity + 1
-                        update()
-                        cartLilstViewModel.getCartProducts()
+
                     }){
                         Image(systemName: "plus")
                             .font(.system(size: 16, weight: .heavy))
@@ -138,14 +134,10 @@ struct CartItemView: View {
                 
             }
         }
-        .onAppear(){
-            productViewState = ProductViewState.fromCartViewModel(vm: product)
-        }
-        .buttonStyle(PlainButtonStyle())
         .swipeActions(edge: .trailing, allowsFullSwipe: true){
             
             Button(action: {
-                deleteProduct()
+                ViewModel.delProd(cart_id: cartitem.cart_id)
             }) {
                 Image(systemName: "trash")
                     .font(.system(size: 16, weight: .heavy))
@@ -167,8 +159,4 @@ struct CartItemView: View {
         }
         .padding()
     }
-    
-    
 }
-
-

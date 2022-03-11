@@ -6,20 +6,21 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
+//import WrappingHStack
 
 struct ProductListView: View {
-    
     var catid: Int
     var namecat: String
     @State private var showText = true
-    @ObservedObject var model: ProductsFeed
+    @StateObject var ViewModel: ProductListViewModel
 
     @State var showCardPoup: Bool = false
     
     init(catid: Int, namecat: String){
         self.catid = catid
         self.namecat = namecat
-        self.model = ProductListViewModel(catid: catid).model
+        _ViewModel = StateObject(wrappedValue: ProductListViewModel(catid: catid))
     }
     
     
@@ -32,16 +33,16 @@ struct ProductListView: View {
         ScrollView {
             ZStack {
                 LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(model) { (product: Product) in
-                        ProductItemView(product: product, showCardPoup: $showCardPoup, model: model)
+                    ForEach(ViewModel.products) { (product: Product) in
+                        ProductItemView(product: product, showCardPoup: $showCardPoup, ViewModel: ViewModel)
                             .onAppear {
-                                self.model.loadMoreProducts(currentItem: product)
+                                self.ViewModel.getProducts(currentItem: product)
                             }
                     }
                     
                 }
                 .onAppear(){
-                    // self.model.loadMoreProducts()
+                    self.ViewModel.getProducts()
                 }
                 
                 
@@ -57,12 +58,12 @@ struct ProductListView: View {
     }
 }
 
+
 struct ProductItemView: View {
     var product: Product
     @Binding var showCardPoup: Bool
-    var model: ProductsFeed
-    @State private var stroken = true
-    public var gridItemLayout = [GridItem(.adaptive(minimum: 10), spacing: 10)]
+    @ObservedObject var ViewModel: ProductListViewModel
+    public var gridItemLayout = [GridItem(.adaptive(minimum: 10), spacing: 1)]
     var body: some View {
         let special = product.special ?? 0
         
@@ -85,8 +86,20 @@ struct ProductItemView: View {
                     }
                     
                     NavigationLink(destination: ProductView(product_id: product.product_id)) {
-                        ImageView(urlString: product.image)
-                            .zIndex(9)
+//                        ImageView(urlString: product.image)
+//                            .zIndex(9)
+                        if let image = product.image {
+                            WebImage(url: URL(string: image))
+                                .onSuccess { image, data, cacheType in
+                                    
+                                }
+                                .resizable()
+                                .placeholder(Image(systemName: "photo"))
+                                .indicator(.activity)
+                                .transition(.fade(duration: 0.5))
+                                .scaledToFit()
+                        }
+                        
                     }
                     .frame(height: 120)
                 }
@@ -96,13 +109,18 @@ struct ProductItemView: View {
                     .font(.custom("Montserrat", size: 13))
                     .lineLimit(3)
                 
-//                if let attributes = product.attributes {
-//                    WrappingHStack(attributes, id:\.self, alignment: .center, spacing: .constant(7)) { (atr: Attributes) in
+                if let attributes = product.attributes {
+                    TagsView(items: attributes)
+                        .frame(maxWidth: 250)
+//                    WrappingHStack {
+//
+//                    WrappingHStack(attributes, alignment: .center, spacing: .constant(7)) { (atr: Attributes) in
 //                        Text("\(atr.value)")
 //                            .fontWeight(.light)
 //                            .font(.custom("Montserrat", size: 10))
 //                    }.frame(maxWidth: 250)
-//                }
+//                    }
+                }
                 
                 if let price2 = product.price2 {
                     HStack() {
@@ -125,10 +143,7 @@ struct ProductItemView: View {
                             Text("\(product.price) &#8381;")
                                 .fontWeight(.semibold)
                                 .font(.custom("Montserrat", size: 14))
-                                .strikethrough(stroken)
-                                .onTapGesture(perform: {
-                                    self.stroken.toggle()
-                                })
+                                .strikethrough(true)
                         } else {
                             Text("\(product.price) &#8381;")
                                 .fontWeight(.semibold)
@@ -184,4 +199,68 @@ struct ProductListView_Previews: PreviewProvider {
     static var previews: some View {
         ProductListView(catid: 8661540, namecat: "123")
     }
+}
+
+struct TagsView: View {
+    
+    let items: [String]
+    var groupedItems: [[String]] = [[String]]()
+    let screenWidth = UIScreen.main.bounds.width
+    
+    init(items: [String]) {
+        self.items = items
+        self.groupedItems = createGroupedItems(items)
+    }
+    
+    private func createGroupedItems(_ items: [String]) -> [[String]] {
+        
+        var groupedItems: [[String]] = [[String]]()
+        var tempItems: [String] =  [String]()
+        var width: CGFloat = 0
+        
+        for word in items {
+            
+            let label = UILabel()
+            label.text = word
+            label.sizeToFit()
+            
+            let labelWidth = label.frame.size.width + 32
+            
+            if (width + labelWidth + 55) < screenWidth {
+                width += labelWidth
+                tempItems.append(word)
+            } else {
+                width = labelWidth
+                groupedItems.append(tempItems)
+                tempItems.removeAll()
+                tempItems.append(word)
+            }
+            
+        }
+        
+        groupedItems.append(tempItems)
+        return groupedItems
+        
+    }
+    
+    var body: some View {
+       // ScrollView {
+        VStack(alignment: .center) {
+            
+            ForEach(groupedItems, id: \.self) { subItems in
+                HStack {
+                    ForEach(subItems, id: \.self) { word in
+                        Text(word)
+                            .fontWeight(.light)
+                            .font(.custom("Montserrat", size: 10))
+                            .fixedSize()
+                    }
+                }
+            }
+            
+            Spacer()
+        }
+            // }
+    }
+    
 }

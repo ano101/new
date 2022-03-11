@@ -8,10 +8,10 @@
 import Foundation
 
 
-class ProductsFeed: ObservableObject, RandomAccessCollection {
+class ProductsFeed: ObservableObject {
     
     typealias Element = Product
-    
+
     @Published var Products = [Product]()
     var startIndex: Int { Products.startIndex }
     var endIndex: Int { Products.endIndex }
@@ -19,12 +19,12 @@ class ProductsFeed: ObservableObject, RandomAccessCollection {
     var currentlyLoading = false
     let catid: Int
     var urlBase: String
-    
+    var doneLoading = false
     
     init(catid: Int){
         self.catid = catid
         urlBase = "https://vinnayagramota.ru/index.php?route=api/mob/getListProducts&cate_id=\(catid)&page="
-        loadMoreProducts()
+        //loadMoreProducts()
         
     }
     
@@ -33,69 +33,45 @@ class ProductsFeed: ObservableObject, RandomAccessCollection {
     }
 
     
-    func loadMoreProducts(currentItem: Product? = nil ) {
-        
-        if !shouldLoadMoreData(currentItem: currentItem){
+    func loadMoreProducts(currentItem: Product? = nil,shouldLoadMore: Bool, completion: @escaping ([Product]) -> () ) {
+        if currentlyLoading == true {
+            return
+        }
+        if doneLoading == true {
+            return
+        }
+        if !shouldLoadMore  {
             return
         }
         currentlyLoading = true
-
+        print("Загружаю товар")
         let urlString = "\(urlBase)\(newPageToLoad)"
         let url = URL(string: urlString)!
 
-        let task = URLSession.shared.dataTask(with: url, completionHandler: parseProductsFromResponse(data:response:error:))
-        task.resume()
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            guard let data = data, error == nil else {
+                return
+            }
+            do {
+//                let outputStr  = String(data: data, encoding: String.Encoding.utf8) ?? "" as String
+//                print(outputStr)
+                let products = try JSONDecoder().decode([Product].self, from: data)
+                
+                DispatchQueue.main.async {
+                    completion(products)
+                    self.newPageToLoad += 1
+                    self.currentlyLoading = false
+                    self.doneLoading = (products.count == 0)
+                }
+            } catch {
+                print(error)
+            }
+        }
+        .resume()
     }
     
-    func shouldLoadMoreData(currentItem: Product? = nil ) -> Bool{
-        if currentlyLoading {
-            return false
-        }
-        guard let currentItem = currentItem else {
-            return true
-        }
-        guard let lastItem = Products.last else {
-            return true
-        }
-        return currentItem.id == lastItem.id
-    }
     
-    func parseProductsFromResponse(data: Data?, response: URLResponse?, error: Error?){
-        guard error == nil else {
-            print("Ошибка: \(error!)")
-            currentlyLoading = false
-            return
-        }
-        guard let data = data else {
-            print("Товар не найден")
-            currentlyLoading = false
-            return
-        }
-        
-        let newProducts = parseProductsFromData(data: data)
-        
-        DispatchQueue.main.async {
-            self.Products.append(contentsOf: newProducts)
-            self.newPageToLoad += 1
-            self.currentlyLoading = false
-        }
-        
-    
-}
-    
-    func parseProductsFromData(data: Data) -> [Product]{
-        print("Data = \(data)")
-        do {
-            let jsonObject = try JSONDecoder().decode([Product].self, from: data)
-            
-            let newProducts = jsonObject
-            return newProducts
-        } catch let error {
-            print("Error \(error)")
-            return []
-        }
-        
-    }
+
   
 }
 
@@ -103,18 +79,18 @@ class Product: Identifiable, Codable {
     let id = UUID()
     var product_id: Int
     var name: String
-    var image: String
+    var image: String?
     var quantity: Int
     var stock_status: String
     var price: Int
     var special: Int?
     var price2: Int?
-    //var discounts: [Discounts]?
-    //var attributes: [Attributes]?
+    var discounts: [Discounts]?
+    var attributes: [String]?
     
-    init(product_id: Int, name: String, image: String, quantity: Int, stock_status: String, price: Int, special: Int?, price2: Int?
-        // discounts: [Discounts]?,
-        // attributes: [Attributes]?
+    init(product_id: Int, name: String, image: String, quantity: Int, stock_status: String, price: Int, special: Int?, price2: Int?,
+         discounts: [Discounts]?,
+         attributes: [String]?
     ){
         self.product_id = product_id
         self.name = name
@@ -124,12 +100,12 @@ class Product: Identifiable, Codable {
         self.price = price
         self.special = special
         self.price2 = price2
-       // self.discounts = discounts
-       // self.attributes = attributes
+        self.discounts = discounts
+        self.attributes = attributes
     }
 }
 
-struct Discounts: Decodable {
+struct Discounts: Codable {
     var quantity: Int
     var price: Int
 }

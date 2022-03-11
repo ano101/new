@@ -9,22 +9,23 @@ import SwiftUI
 
 struct homeView: View {
     var body: some View {
-        ZStack {
+      //  ZStack {
         VStack(spacing: 0){
             
-            NavigationBarView()
-                .padding(.horizontal, 15)
-                .padding(.bottom)
-                .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top)
-                .background(Color.white)
-                .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 5)
-            
+//           
+//            NavigationBarView()
+//                .padding(.horizontal, 15)
+//                .padding(.bottom)
+//                .padding(.top, UIApplication.shared.windows.first?.safeAreaInsets.top)
+//                .background(Color.white)
+//                .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 5)
             
             
             TabView {
+                
                 Text("Главная")
                     .tabItem {
-                        Image(systemName: "person.fill")
+                        Image(systemName: "house.fill")
                         Text("Обзор")
                             .font(.custom("Montserrat", size: 14))
                     }
@@ -43,14 +44,29 @@ struct homeView: View {
                             .font(.custom("Montserrat", size: 14))
                     }
                 
+                Text("Избранное")
+                    .tabItem {
+                        Image(systemName: "heart.fill")
+                        Text("Избранное")
+                            .font(.custom("Montserrat", size: 14))
+                    }
+                
+                Text("Профиль")
+                    .tabItem {
+                        Image(systemName: "person.fill")
+                        Text("Профиль")
+                            .font(.custom("Montserrat", size: 14))
+                    }
+                
             }
             .accentColor(Color("primary"))
             .onAppear(){
                 UITabBar.appearance().backgroundColor = .white
             }
         }
-    }
-        .ignoresSafeArea(.all, edges: .top)
+        
+   // }
+        
     }
 }
 

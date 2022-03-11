@@ -11,3 +11,7 @@ import Foundation
 class Api {
     
 }
+struct DefaultResponse: Codable {
+    let status: Bool
+    let error: String?
+}
