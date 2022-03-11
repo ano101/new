@@ -22,10 +22,10 @@ class CatalogModel: ObservableObject {
                 return
             }
             do {
-                let categorys = try JSONDecoder().decode([Category].self, from: data)
+                let categories = try JSONDecoder().decode([Category].self, from: data)
                 
                 DispatchQueue.main.async {
-                    completion(categorys)
+                    completion(categories)
                 }
             } catch {
                 print(error)
