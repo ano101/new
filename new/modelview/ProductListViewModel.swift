@@ -31,6 +31,7 @@ class ProductListViewModel: ObservableObject {
             return true
         }
         
+        //TODO: For n ?)) Better naming. What is N?))
         for n in (products.count - 4)...(products.count-1) {
                     if n >= 0 && currentItem.id == products[n].id {
                         return true
