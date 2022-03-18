@@ -20,6 +20,7 @@ struct ProductResponse: Codable, Identifiable {
     let cartId: Int
     let thumb: String
     let name: String
+    let name_alt: String
     let model: String
     let quantity: Int
     let price: Double

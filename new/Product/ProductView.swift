@@ -38,7 +38,7 @@ struct ProductView: View {
                                 .indicator(.activity)
                                 .transition(.fade(duration: 0.5))
                                 .scaledToFit()
-                                .frame(height: 200)
+                                .frame(height: 220)
                         }
                         Text("\(product.name)")
                             .fontWeight(.semibold)

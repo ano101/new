@@ -44,6 +44,7 @@ class ProductViewModel: ObservableObject {
     
     func getProduct() {
         netManager.getItem(for: "api/mob/getProduct&prod_id=\(product_id)") { (product: ProductItem) in
+            print(product)
             if product.status {
                 self.products = product
             } else {

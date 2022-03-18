@@ -91,15 +91,20 @@ struct CartItemView: View {
                     .transition(.fade(duration: 0.5))
                     .scaledToFit()
             }
-            .frame(height: 100)
+            .frame(height: 120)
             VStack(alignment: .leading, spacing: 10) {
                 Text(cartItem.name)
-                    .fontWeight(.semibold)
+                    .font(.wineDefault)
+                    .fontWeight(.medium)
+                    .foregroundColor(Color("title"))
+                Text(cartItem.name_alt)
+                    .font(.wineNameAlt)
+                    .fontWeight(.medium)
                     .foregroundColor(.gray)
                 HStack(spacing: 15){
                     let price = fm.priceFormat(price: cartItem.price)
                     Text("\(price) &#8381;")
-                        .font(.wineTitle)
+                        .font(.wineSubTitle)
                         .fontWeight(.semibold)
                         .foregroundColor(.black)
                     Spacer(minLength: 0)
@@ -110,7 +115,7 @@ struct CartItemView: View {
                         }
                     }){
                         Image(systemName: "minus")
-                            .font(.system(size: 16, weight: .heavy))
+                            .font(.system(size: 14, weight: .heavy))
                             .foregroundColor(.black)
                     }
                     Text("\(quantity)")
@@ -124,7 +129,7 @@ struct CartItemView: View {
                         ViewModel.updateQuantityProductCart(cartId: cartItem.cartId, quantity: quantity)
                     }){
                         Image(systemName: "plus")
-                            .font(.system(size: 16, weight: .heavy))
+                            .font(.system(size: 14, weight: .heavy))
                             .foregroundColor(.black)
                     }
                 }
