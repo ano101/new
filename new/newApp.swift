@@ -8,14 +8,22 @@
 import SwiftUI
 import CoreData
 
+
 @main
 struct newApp: App {
-    let initViewModel = InitViewModel()
-        var body: some Scene {
-            WindowGroup {
-                InitView()
-                    .environmentObject(initViewModel)
-            }
+    @StateObject var netManager:NetworkManager
+    @StateObject var initViewModel:InitViewModel
+    
+    init(){
+        let netManager = NetworkManager()
+        _netManager = StateObject(wrappedValue: netManager)
+        _initViewModel = StateObject(wrappedValue: InitViewModel(netManager: netManager))
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            InitView(initViewModel: initViewModel, netManager: netManager, isShow: $netManager.showSheetError)
         }
-
+    }
+    
 }

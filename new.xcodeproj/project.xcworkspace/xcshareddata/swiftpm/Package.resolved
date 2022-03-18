@@ -1,34 +1,23 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "SDWebImage",
-        "repositoryURL": "https://github.com/SDWebImage/SDWebImage.git",
-        "state": {
-          "branch": null,
-          "revision": "2c53f531f1bedd253f55d85105409c28ed4a922c",
-          "version": "5.12.3"
-        }
-      },
-      {
-        "package": "SDWebImageSwiftUI",
-        "repositoryURL": "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
-        "state": {
-          "branch": null,
-          "revision": "cd8625b7cf11a97698e180d28bb7d5d357196678",
-          "version": "2.0.2"
-        }
-      },
-      {
-        "package": "WrappingHStack",
-        "repositoryURL": "https://github.com/dkk/WrappingHStack",
-        "state": {
-          "branch": null,
-          "revision": "4ad53e116c4c0b526f265e3568c7cceec595699e",
-          "version": "2.2.0"
-        }
+  "pins" : [
+    {
+      "identity" : "sdwebimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImage.git",
+      "state" : {
+        "revision" : "2c53f531f1bedd253f55d85105409c28ed4a922c",
+        "version" : "5.12.3"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "sdwebimageswiftui",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImageSwiftUI.git",
+      "state" : {
+        "revision" : "cd8625b7cf11a97698e180d28bb7d5d357196678",
+        "version" : "2.0.2"
+      }
+    }
+  ],
+  "version" : 2
 }
