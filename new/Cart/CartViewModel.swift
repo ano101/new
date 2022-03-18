@@ -9,13 +9,20 @@ import Foundation
 import CoreData
 
 class CartViewModel: ObservableObject {
-    @Published var cart: CartItem?
+
     let netManager: NetworkManager
+    
+    @Published var cart: CartItem?
+
     init(netManager: NetworkManager){
         self.netManager = netManager
     }
+
     func getCartProducts(){
-        if let customer_id = UserDefaults.standard.string(forKey: "user_id"), let hash = UserDefaults.standard.string(forKey: "hash"){
+        if
+            let customer_id = UserDefaults.standard.string(forKey: "user_id"),
+            let hash = UserDefaults.standard.string(forKey: "hash"
+        ){
             self.netManager.showLoaderApi = true
             let postBody = SendGetCart(hash: hash, customer_id: customer_id)
             netManager.postItem(for: "api/mob/getCart", body: postBody) { (cart: CartItem) in

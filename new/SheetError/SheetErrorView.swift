@@ -41,7 +41,7 @@ struct SheetErrorView: View {
             }
             .frame(height: 20)
             .frame(maxWidth: .infinity)
-            .background(Color.white.opacity(0.00001))
+            .background(Color.white.opacity(0.00001)) //Awesome number :) But why?
             .gesture(dragGesture)
             ZStack {
                 VStack {

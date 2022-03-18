@@ -119,7 +119,8 @@ struct ProductView: View {
                                                     }
                                                 }
                                             Button(action: {
-                                                quantity = quantity + 1
+                                                quantity += 1
+
                                             }){
                                                 Image(systemName: "plus")
                                                     .font(.system(size: 16, weight: .heavy))

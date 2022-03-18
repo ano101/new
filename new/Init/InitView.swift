@@ -37,6 +37,7 @@ struct InitView: View {
     }
 }
 
+//very good! But why you don't create a new file Font? Why you init it here?
 public extension Font {
     static let wineBigTitle = Font.custom("Montserrat", size: 20)
     static let wineTitle = Font.custom("Montserrat", size: 18)

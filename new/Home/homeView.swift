@@ -7,8 +7,14 @@
 
 import SwiftUI
 
+//Lower case
 struct homeView: View {
     @ObservedObject var netManager: NetworkManager
+    
+    init(netManager: NetworkManager) {
+        _netManager = ObservedObject(wrappedValue: netManager)
+    }
+
     var body: some View {
         VStack(spacing: 0){
             //            NavigationBarView()

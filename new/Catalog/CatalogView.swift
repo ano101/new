@@ -31,9 +31,7 @@ struct CatalogView: View {
                 )
         }
         .onAppear {
-            if viewModel.doneLoading {
-                
-            } else {
+            if !viewModel.doneLoading {
                 viewModel.getCaterogies()
                 viewModel.doneLoading = true
             }

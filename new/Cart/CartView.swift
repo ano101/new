@@ -9,8 +9,11 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct CartView: View {
+    //TODO: fm? What it is? Better naming please
     @StateObject var fm = formaterr()
     @ObservedObject var netManager: NetworkManager
+    
+//with Upper case? var?
     @StateObject var ViewModel: CartViewModel
     init(netManager: NetworkManager){
         self.netManager = netManager
@@ -40,7 +43,8 @@ struct CartView: View {
                             .foregroundColor(.gray)
                         Spacer()
                         if let carts = ViewModel.cart {
-                            Text("\(fm.priceFormat(price: carts.total)) &#8381;")
+//                            Text("\(fm.priceFormat(price: carts.total)) &#8381;")
+                            Text("\(carts.total.priceFormat) &#8381;")
                                 .font(.wineSubTitle)
                                 .fontWeight(.bold)
                                 .foregroundColor(.black)
@@ -74,11 +78,18 @@ struct CartView: View {
     }
 }
 
+//Why you don't create a folder - Subviews and put in here? And somethink like that
 struct CartItemView: View {
     let cartItem: ProductResponse
     @ObservedObject var ViewModel: CartViewModel
     @StateObject var fm = formaterr()
-    @State var quantity: Int = 1
+    @State var quantity: Int
+    init(cartItem: ProductResponse, ViewModel: CartViewModel) {
+        _quantity = State(wrappedValue: cartItem.quantity)
+        _ViewModel = ObservedObject(wrappedValue: ViewModel)
+        self.cartItem = cartItem
+    }
+    
     var body: some View {
         HStack(spacing: 15){
             VStack {
@@ -157,8 +168,5 @@ struct CartItemView: View {
             .tint(.blue)
         }
         .padding()
-        .onAppear{
-            self.quantity = cartItem.quantity
-        }
     }
 }
