@@ -10,6 +10,7 @@ import Foundation
 class NetworkManager: ObservableObject {
     @Published var showSheetError: Bool = false
     @Published var errorMessage = ""
+    @Published var showLoaderApi: Bool = false
     private let urlBase = "https://vinnayagramota.ru/index.php?route="
     func getItem<T: Codable> (for url: String, completion: @escaping (T) -> ()){
         guard let url = URL(string: "\(urlBase)\(url)") else {return}

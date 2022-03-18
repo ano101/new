@@ -16,16 +16,22 @@ class CartViewModel: ObservableObject {
     }
     func getCartProducts(){
         if let customer_id = UserDefaults.standard.string(forKey: "user_id"), let hash = UserDefaults.standard.string(forKey: "hash"){
+            self.netManager.showLoaderApi = true
             let postBody = SendGetCart(hash: hash, customer_id: customer_id)
             netManager.postItem(for: "api/mob/getCart", body: postBody) { (cart: CartItem) in
                 if cart.status == true {
                     self.cart = cart
                 } else {
+                    if cart.products == nil {
+                        self.cart = nil
+                    }
                     if let error = cart.error {
                         self.netManager.showSheetError = true
                         self.netManager.errorMessage = error
                     }
                 }
+                
+                self.netManager.showLoaderApi = false
             }
         }
     }

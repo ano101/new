@@ -23,6 +23,9 @@ struct InitView: View {
                 } else {
                     LoginView(initViewModel: initViewModel)
                 }
+                if netManager.showLoaderApi {
+                    LoaderApiView()
+                }
             }
             SheetErrorView(isShow: $netManager.showSheetError, errorMessage: $netManager.errorMessage)
         }
